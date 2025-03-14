@@ -1,0 +1,187 @@
+openapi: 3.0.3
+info:
+  title: Eisenhower Todolist API 3.0
+  description: "Simple Eisenhower Todolist Restful API"
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+paths:
+  /todos:
+    get:
+      security: 
+        - ApiKeyAuth: []
+      tags: 
+        - todo
+      description: "List all todo"
+      summary: "List all todo"
+      responses:
+        200:
+          description: "Success get all todo"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  code:
+                    type: number
+                  status:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Todo"
+    post:
+      security: 
+        - ApiKeyAuth: []
+      tags: 
+        - todo
+      description: "Create new todo"
+      summary: "Create new todo"
+      requestBody:
+        description: "request body create new todo"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                type:
+                  type: string
+      responses:
+        200:
+          description: "Success create new todo"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Todo"
+  /todos/{todoId}:
+    get:
+      security: 
+        - ApiKeyAuth: []
+      tags: 
+          - todo
+      description: "Get todo by id"
+      summary: "Get todo by id"
+      parameters:
+        - in: path
+          name: todoId
+          required: true
+          schema:
+            minimum: 1
+            type: integer
+          description: "Todo Id"
+      responses:
+        200:
+          description: "Success get todo by id"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Todo"
+    patch:
+      security: 
+        - ApiKeyAuth: []
+      tags: 
+          - todo
+      description: "Update todo by id"
+      summary: "Update todo by id"
+      parameters: 
+        - in: path
+          name: todoId
+          required: true
+          schema:
+            minimum: 1
+            type: integer
+          description: "Todo Id"
+      requestBody:
+        description: "request body update new todo"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                type:
+                  type: string
+      responses:
+        200:
+          description: "Success update Todo"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Todo"
+    delete:
+      security: 
+        - ApiKeyAuth: []
+      tags: 
+        - todo
+      description: "Delete todo by id"
+      summary: "Delete todo by id"
+      parameters: 
+        - in: path
+          name: todoId
+          required: true
+          schema:
+            minimum: 1
+            type: integer
+          description: "Todo Id"
+      responses:
+        200:
+          description: "Success delete todo"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                  status:
+                    type: string
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
