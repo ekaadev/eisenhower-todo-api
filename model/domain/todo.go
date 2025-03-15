@@ -1,5 +1,10 @@
 package domain
 
+import (
+	"database/sql"
+	"time"
+)
+
 type TodoType string
 
 // type of todo
@@ -14,9 +19,9 @@ const (
 type Todo struct {
 	Id          int
 	Title       string
-	Description string
+	Description sql.NullString
 	Type        TodoType
 	IsDone      bool
-	CreatedAt   string
-	UpdatedAt   string
+	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
 }
