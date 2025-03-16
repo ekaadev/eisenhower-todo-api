@@ -18,24 +18,37 @@ func NewTodoRepository() TodoRepository {
 
 // Implement method create from Interface TodoRepository
 func (repository *TodoRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, todo domain.Todo) domain.Todo {
-	SQL := "INSERT INTO todos (title, description, type, is_done) VALUES(?, ?, ?, ?)"
+	SQL := "INSERT INTO todos (title, description, type, is_done) VALUES($1, $2, $3, $4) RETURNING id"
 
-	result, err := tx.ExecContext(ctx, SQL, todo.Title, todo.Description, todo.Type, todo.IsDone)
+	var description string
+
+	if todo.Description.Valid {
+		description = todo.Description.String
+	} else {
+		description = ""
+	}
+
+	result := tx.QueryRowContext(ctx, SQL, todo.Title, description, todo.Type, todo.IsDone)
+
+	err := result.Scan(&todo.Id)
 	helper.PanicIfError(err)
-
-	id, err := result.LastInsertId()
-	helper.PanicIfError(err)
-
-	todo.Id = int(id)
 
 	return todo
 }
 
 // Implement method patch from Interface TodoRepository
 func (repository *TodoRepositoryImpl) Patch(ctx context.Context, tx *sql.Tx, todo domain.Todo) domain.Todo {
-	SQL := "UPDATE todos SET title = ?, description = ?, type = ?, is_done = ? WHERE id = ?"
+	SQL := "UPDATE todos SET title = $1, description = $2, type = $3, is_done = $4 WHERE id = $5"
 
-	_, err := tx.ExecContext(ctx, SQL, todo.Title, todo.Description, todo.Type, todo.IsDone, todo.Id)
+	var description string
+
+	if todo.Description.Valid {
+		description = todo.Description.String
+	} else {
+		description = ""
+	}
+
+	_, err := tx.ExecContext(ctx, SQL, todo.Title, description, todo.Type, todo.IsDone, todo.Id)
 	helper.PanicIfError(err)
 
 	return todo
@@ -43,7 +56,7 @@ func (repository *TodoRepositoryImpl) Patch(ctx context.Context, tx *sql.Tx, tod
 
 // Implement method delete from Interface TodoRepository
 func (repository *TodoRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, todoId int) {
-	SQL := "DELETE FROM todos WHERE id = ?"
+	SQL := "DELETE FROM todos WHERE id = $1"
 
 	_, err := tx.ExecContext(ctx, SQL, todoId)
 	helper.PanicIfError(err)
@@ -51,7 +64,7 @@ func (repository *TodoRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, to
 
 // Implement method find by id from Interface TodoRepository
 func (repository *TodoRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, todoId int) (domain.Todo, error) {
-	SQL := "SELECT id, title, description, type, is_done, created_at, updated_at FROM todos WHERE id = ?"
+	SQL := "SELECT id, title, description, type, is_done, created_at, updated_at FROM todos WHERE id = $1"
 
 	rows, err := tx.QueryContext(ctx, SQL, todoId)
 	helper.PanicIfError(err)
