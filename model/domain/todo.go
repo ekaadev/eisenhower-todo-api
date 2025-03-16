@@ -9,10 +9,10 @@ type TodoType string
 
 // type of todo
 const (
-	ImportantUrgent       TodoType = "important_urgent"
-	ImportantNotUrgent    TodoType = "important_not_urgent"
-	NotImportantUrgent    TodoType = "not_important_urgent"
-	NotImportantNotUrgent TodoType = "not_important_not_urgent"
+	UrgentImportant       TodoType = "urgent_important"
+	NotUrgentImportant    TodoType = "not_urgent_important"
+	UrgentNotImportant    TodoType = "urgent_not_important"
+	NotUrgentNotImportant TodoType = "not_urgent_not_important"
 )
 
 // Todo struct represents a table todos
