@@ -18,7 +18,7 @@ func NewTodoRepository() TodoRepository {
 
 // Implement method create from Interface TodoRepository
 func (repository *TodoRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, todo domain.Todo) domain.Todo {
-	SQL := "INSERT INTO todos (title, description, type, is_done) VALUES($1, $2, $3, $4) RETURNING id"
+	SQL := "INSERT INTO todos (title, description, type) VALUES($1, $2, $3) RETURNING id, is_done, created_at, updated_at"
 
 	var description string
 
@@ -28,9 +28,9 @@ func (repository *TodoRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, to
 		description = ""
 	}
 
-	result := tx.QueryRowContext(ctx, SQL, todo.Title, description, todo.Type, todo.IsDone)
+	result := tx.QueryRowContext(ctx, SQL, todo.Title, description, todo.Type)
 
-	err := result.Scan(&todo.Id)
+	err := result.Scan(&todo.Id, &todo.IsDone, &todo.CreatedAt, &todo.UpdatedAt)
 	helper.PanicIfError(err)
 
 	return todo
