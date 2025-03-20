@@ -28,7 +28,22 @@ func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interfa
 		helper.WriteToResponseBody(writer, webResponse, http.StatusNotFound)
 
 		return
-	} else if errors.Is(e, validator.ValidationErrors{}) {
+	}
+
+	if errors.Is(e, validator.ValidationErrors{}) {
+
+		webResponse := web.WebResponse{
+			Code:   http.StatusBadRequest,
+			Status: "BAD REQUEST",
+			Data:   e.Error(),
+		}
+
+		helper.WriteToResponseBody(writer, webResponse, http.StatusBadRequest)
+
+		return
+	}
+
+	if errors.Is(e, ErrParams) {
 
 		webResponse := web.WebResponse{
 			Code:   http.StatusBadRequest,

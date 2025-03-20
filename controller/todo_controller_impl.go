@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"eisenhower-todo-api/exception"
 	"eisenhower-todo-api/helper"
 	"eisenhower-todo-api/model/web"
 	"eisenhower-todo-api/service"
@@ -39,6 +40,14 @@ func (controller *TodoControllerImpl) Create(writer http.ResponseWriter, request
 func (controller *TodoControllerImpl) Patch(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	todoPatchRequest := web.TodoPatchRequest{}
 
+	todoId := params.ByName("id")
+	id, err := strconv.Atoi(todoId)
+	if err != nil {
+		panic(exception.ErrParams.Error)
+	}
+
+	todoPatchRequest.Id = id
+
 	helper.ReadFromRequestBody(request, &todoPatchRequest)
 
 	todoResponse := controller.TodoService.Patch(request.Context(), todoPatchRequest)
@@ -56,7 +65,9 @@ func (controller *TodoControllerImpl) Delete(writer http.ResponseWriter, request
 	todoId := params.ByName("id")
 
 	id, err := strconv.Atoi(todoId)
-	helper.PanicIfError(err)
+	if err != nil {
+		panic(exception.ErrParams.Error)
+	}
 
 	controller.TodoService.Delete(request.Context(), id)
 
@@ -72,7 +83,9 @@ func (controller *TodoControllerImpl) FindById(writer http.ResponseWriter, reque
 	todoId := params.ByName("id")
 
 	id, err := strconv.Atoi(todoId)
-	helper.PanicIfError(err)
+	if err != nil {
+		panic(exception.ErrParams.Error)
+	}
 
 	todoResponse := controller.TodoService.FindById(request.Context(), id)
 
