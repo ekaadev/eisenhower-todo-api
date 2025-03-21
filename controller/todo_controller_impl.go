@@ -43,7 +43,7 @@ func (controller *TodoControllerImpl) Patch(writer http.ResponseWriter, request 
 	todoId := params.ByName("id")
 	id, err := strconv.Atoi(todoId)
 	if err != nil {
-		panic(exception.ErrParams.Error)
+		panic(exception.ErrParams)
 	}
 
 	todoPatchRequest.Id = id
@@ -66,7 +66,7 @@ func (controller *TodoControllerImpl) Delete(writer http.ResponseWriter, request
 
 	id, err := strconv.Atoi(todoId)
 	if err != nil {
-		panic(exception.ErrParams.Error)
+		panic(exception.ErrParams)
 	}
 
 	controller.TodoService.Delete(request.Context(), id)
@@ -84,7 +84,7 @@ func (controller *TodoControllerImpl) FindById(writer http.ResponseWriter, reque
 
 	id, err := strconv.Atoi(todoId)
 	if err != nil {
-		panic(exception.ErrParams.Error)
+		panic(exception.ErrParams)
 	}
 
 	todoResponse := controller.TodoService.FindById(request.Context(), id)
