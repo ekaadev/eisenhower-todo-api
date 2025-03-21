@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-	// TODO: Implement main function
 	db := app.NewDB()
 	defer db.Close()
 
