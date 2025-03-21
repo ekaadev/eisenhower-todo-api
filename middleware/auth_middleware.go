@@ -14,7 +14,7 @@ func AuthMiddleware(next httprouter.Handle) httprouter.Handle {
 	return func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		api_key := request.Header.Get("X-API-Key")
 
-		err := godotenv.Load("../.env")
+		err := godotenv.Load(".env")
 		helper.PanicIfError(err)
 
 		if api_key != os.Getenv("X_API_KEY") {
