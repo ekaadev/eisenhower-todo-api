@@ -34,16 +34,7 @@ func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interfa
 		return
 	}
 
-	if errors.Is(e, validator.ValidationErrors{}) {
-
-		webResponse := web.WebResponse{
-			Code:   http.StatusBadRequest,
-			Status: "BAD REQUEST",
-			Data:   e.Error(),
-		}
-
-		helper.WriteToResponseBody(writer, webResponse, http.StatusBadRequest)
-
+	if validationErr(writer, request, e) {
 		return
 	}
 
@@ -67,4 +58,20 @@ func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interfa
 	}
 
 	helper.WriteToResponseBody(writer, webResponse, http.StatusInternalServerError)
+}
+
+func validationErr(writer http.ResponseWriter, _ *http.Request, err interface{}) bool {
+	exception, ok := err.(validator.ValidationErrors)
+	if ok {
+		webResponse := web.WebResponse{
+			Code:   http.StatusBadRequest,
+			Status: "BAD REQUEST",
+			Data:   exception.Error(),
+		}
+
+		helper.WriteToResponseBody(writer, webResponse, http.StatusBadRequest)
+		return true
+	} else {
+		return false
+	}
 }

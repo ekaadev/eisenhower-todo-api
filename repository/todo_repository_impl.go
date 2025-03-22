@@ -28,7 +28,18 @@ func (repository *TodoRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, to
 	if todo.Description.Valid {
 		description = todo.Description.String
 	} else {
+		// OLD
 		description = ""
+
+		// NEW
+		// SQL = "INSERT INTO todos (title, type) VALUES($1, $2) RETURNING id, is_done, created_at, updated_at"
+
+		// result := tx.QueryRowContext(ctx, SQL, todo.Title, todo.Type)
+
+		// err := result.Scan(&todo.Id, &todo.IsDone, &todo.CreatedAt, &todo.UpdatedAt)
+		// helper.PanicIfError(err)
+
+		// return todo
 	}
 
 	result := tx.QueryRowContext(ctx, SQL, todo.Title, description, todo.Type)

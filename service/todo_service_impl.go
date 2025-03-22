@@ -49,10 +49,23 @@ func (service *TodoServiceImpl) Create(ctx context.Context, request web.TodoCrea
 
 	defer helper.CommitOrRollback(tx)
 
+	// OLD
 	description := sql.NullString{
 		String: request.Description,
 		Valid:  true,
 	}
+
+	// NEW
+	// var description sql.NullString
+
+	// if len(request.Description) == 0 {
+	// 	description = sql.NullString{}
+	// } else {
+	// 	description = sql.NullString{
+	// 		String: request.Description,
+	// 		Valid:  true,
+	// 	}
+	// }
 
 	todo := domain.Todo{
 		Title:       request.Title,
