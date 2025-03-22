@@ -12,12 +12,21 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// TodoServiceImpl struct
+// Implement TodoService interface
+// @Attribute Validate, for validate request
+// @Attribute DB, for database connection
+// @Attribute TodoRepository, for repository
 type TodoServiceImpl struct {
 	Validate       *validator.Validate
 	DB             *sql.DB
 	TodoRepository repository.TodoRepository
 }
 
+// Function NewTodoService
+// To create new TodoService implementation instance (Constructor)
+// @Parameter, validate: *validator.Validate, db: *sql.DB, todoRepository: repository.TodoRepository
+// @Return, TodoService
 func NewTodoService(validate *validator.Validate, db *sql.DB, todoRepository repository.TodoRepository) TodoService {
 	return &TodoServiceImpl{
 		Validate:       validate,
@@ -26,6 +35,11 @@ func NewTodoService(validate *validator.Validate, db *sql.DB, todoRepository rep
 	}
 }
 
+// Function Create
+// Implement Create method from TodoService interface
+// @Parameter, ctx context.Context, request web.TodoCreateRequest
+// @Return, web.TodoResponse
+// Description, Use for handle service to create new todo
 func (service *TodoServiceImpl) Create(ctx context.Context, request web.TodoCreateRequest) web.TodoResponse {
 	err := service.Validate.Struct(request)
 	helper.PanicIfError(err)
@@ -59,6 +73,11 @@ func (service *TodoServiceImpl) Create(ctx context.Context, request web.TodoCrea
 	}
 }
 
+// Function Patch
+// Implement Patch method from TodoService interface
+// @Parameter, ctx context.Context, request web.TodoPatchRequest
+// @Return, web.TodoResponse
+// Description, Use for handle service to update todo but not all fields
 func (service *TodoServiceImpl) Patch(ctx context.Context, request web.TodoPatchRequest) web.TodoResponse {
 	err := service.Validate.Struct(request)
 	helper.PanicIfError(err)
@@ -106,6 +125,10 @@ func (service *TodoServiceImpl) Patch(ctx context.Context, request web.TodoPatch
 
 }
 
+// Function Delete
+// Implement Delete method from TodoService interface
+// @Parameter, ctx context.Context, todoId int
+// Description, Use for handle service to delete todo
 func (service *TodoServiceImpl) Delete(ctx context.Context, todoId int) {
 	tx, err := service.DB.Begin()
 	helper.PanicIfError(err)
@@ -118,6 +141,11 @@ func (service *TodoServiceImpl) Delete(ctx context.Context, todoId int) {
 	service.TodoRepository.Delete(ctx, tx, todo.Id)
 }
 
+// Function FindById
+// Implement FindById method from TodoService interface
+// @Parameter, ctx context.Context, todoId int
+// @Return, web.TodoResponse
+// Description, Use for handle service to get todo by id
 func (service *TodoServiceImpl) FindById(ctx context.Context, todoId int) web.TodoResponse {
 	tx, err := service.DB.Begin()
 	helper.PanicIfError(err)
@@ -138,6 +166,11 @@ func (service *TodoServiceImpl) FindById(ctx context.Context, todoId int) web.To
 	}
 }
 
+// Function FindAll
+// Implement FindAll method from TodoService interface
+// @Parameter, ctx context.Context
+// @Return, []web.TodoResponse
+// Description, Use for handle service to get all todos
 func (service *TodoServiceImpl) FindAll(ctx context.Context) []web.TodoResponse {
 	tx, err := service.DB.Begin()
 	helper.PanicIfError(err)

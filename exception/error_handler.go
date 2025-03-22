@@ -9,11 +9,15 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// List of error message
 var (
 	ErrNotFound = errors.New("data not found")
 	ErrParams   = errors.New("invalid params")
 )
 
+// Function ErrorHandler
+// Use for handle PanicHandler from httprouter
+// @Parameter, writer http.ResponseWriter, request *http.Request, err interface{}
 func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interface{}) {
 
 	e := err.(error)

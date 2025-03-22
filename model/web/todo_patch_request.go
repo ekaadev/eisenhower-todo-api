@@ -1,5 +1,7 @@
 package web
 
+// TodoPatchRequest struct
+// Use for request body when update some todo
 type TodoPatchRequest struct {
 	Id          int    `validate:"required" json:"id"`
 	Title       string `validate:"max=200" json:"title"`

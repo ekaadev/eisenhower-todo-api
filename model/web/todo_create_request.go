@@ -1,5 +1,7 @@
 package web
 
+// TodoCreateRequest struct
+// Use for request body when create new todo
 type TodoCreateRequest struct {
 	Title       string `validate:"required,min=1,max=200" json:"title"`
 	Description string `validate:"required,min=1" json:"description"`
